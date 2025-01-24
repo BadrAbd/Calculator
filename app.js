@@ -1,6 +1,6 @@
 import * as utils from './utils.js'
 
-let nbrStrFrom = ''
+let nbrStrFrom = '0'
 let nbr = 0
 let nbrSecOp = 0
 // let result = 0
@@ -163,78 +163,58 @@ function activeOp(){
                 return op
     })
 }
-const calcOperation = function(operator){
-    // check if nbr and nbrsecOP are numbers
-    // alert(operator)
-    if (operator === '+')
-        nbr += nbrSecOp
-    else if(operator === '−')
-        nbr -= nbrSecOp
-    else if(operator === '×')
-        nbr *= nbrSecOp
-    else if(operator === '÷'){
-        if(nbrSecOp === 0){
-            // alert('display' + display.textContent)
-            // display.textContent = 'Error'
-            display.textContent = 'Error';
-            //  why display error isn't working
-            // alert('display' + display.textContent)
-            nbr = 0
-        }
-        else
-            nbr = nbr / nbrSecOp
+const calcOperation = function(operator) {
+    switch(operator) {
+        case '+':
+            nbr += nbrSecOp
+            break
+        case '−':
+            nbr -= nbrSecOp
+            break
+        case '×':
+            nbr *= nbrSecOp
+            break
+        case '÷':
+            if (nbrSecOp === 0) {
+                display.textContent = 'Error'
+                nbr = 0
+            } else {
+                nbr /= nbrSecOp
+            }
+            break
     }
 }
-// operators loop and ev list
+
 operators.forEach(op => {
-    op.element.addEventListener('click', () =>{
-        if (op.operation === '='){
-            let activeOp = document.querySelector('.activeOperator')
-            // if(document.querySelector('.activeOperator')){
-                //     activeOp = document.querySelector('.activeOperator')
-                // }
-                // alert(activeOp.textContent)
-            const lastOperator =  operators.find(oper => {
-                return activeOp.textContent === oper.operation
-            })
-            alert(lastOperator)
-            alert('tal hna')
-            calcOperation(lastOperator.operation)
-            nbTostr(nbr)
-            displayNbrStr()
-            // maybe this ??
-            nbrStrFrom = '0'
-            utils.removeActiveIfExists()
-        }
-        else if(op.handler !== '=' && !op.element.classList.contains('activeOperator')){
-            alert('f off' + nbr)
+    op.element.addEventListener('click', () => {
+        if (op.operation === '=') {
+            const activeOp = document.querySelector('.activeOperator')
+            if (activeOp) {
+                const lastOperator = operators.find(oper => activeOp.textContent === oper.operation)
+                if (lastOperator) {
+                    calcOperation(lastOperator.operation)
+                    nbTostr(nbr)
+                    displayNbrStr()
+                    nbrStrFrom = '0'
+                    utils.removeActiveIfExists()
+                }
+            }
+        } else if (!op.element.classList.contains('activeOperator')) {
             utils.removeActiveIfExists()
             changeButtonColor(op.element)
             nbrStrFrom = '0'
             nbrSecOp = updateNbr()
             displayNbrStr()
-            // alert('f off' + nbrSecOp)
-        }
-        else if(op.element.classList.contains('activeOperator')){
-            alert('f off' + nbr)
-            // if it's active and i pressed func another time
-            // nbr = nbr + nbrSecOp
+        } else if (op.element.classList.contains('activeOperator')) {
             calcOperation(op.operation)
-            // nbr = nbr op.operation nbrSecOp
-            // display new value
             nbTostr(nbr)
             displayNbrStr()
-            // initialize nbrSecOp = 0 to take new input nub 
             nbrSecOp = 0
-            // update nbrStrForm
             nbTostr(nbrSecOp)
-            //     alert(nbrSecOp)
         }
-        // i placed it exactly here cuz 1: to remove active butt if i pressed another and 2: if i pressed equal need to rem active butt too{
-        // maybe pass the op to removeActiveIfExists and skip it by a if (do not remove active)
-        // utils.removeActiveIfExists()
     })
 })
+
 
 // calcFunctiocns loop and ev list
 calcFunctions.forEach(func => {
@@ -243,4 +223,3 @@ calcFunctions.forEach(func => {
         func.handler(func)
     })
 })
-alert('1');
